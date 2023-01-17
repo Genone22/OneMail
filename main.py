@@ -35,8 +35,6 @@ class Bulk_email(customtkinter.CTk):
         self.browse_icon = ImageTk.PhotoImage(file='images/import35.png')
         self.clear_icon = ImageTk.PhotoImage(file='images/clear35.png')
         self.question_icon = ImageTk.PhotoImage(file='images/question-mark.png')
-        self.show_icon = ImageTk.PhotoImage(file='images/show-15.png')
-        self.hide_icon = ImageTk.PhotoImage(file='images/icons8-hide-30.png')
         # Title
         title = Label(self.root,
                       text='Делайте Email расcылки быстро и легко',
@@ -461,7 +459,7 @@ class Bulk_email(customtkinter.CTk):
             self.check_file_exist()
 
 
-# Cut / Paste / Copy function
+# Cut / Paste / Copy / Ctrl+A function
 def on_key_release(event):
     ctrl = (event.state & 0x4) != 0
     if event.keycode == 88 and ctrl and event.keysym.lower() != "x":
