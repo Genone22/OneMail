@@ -20,7 +20,7 @@ customtkinter.set_default_color_theme("dark-blue")
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 
-class Bulk_email(customtkinter.CTk):
+class BulkEmail(customtkinter.CTk):
     def __init__(self, root):
         self.info = info_text
         self.root = root
@@ -482,6 +482,6 @@ root.bind_all("<Key>", on_key_release, "+")
 
 root.bind('<Escape>', lambda event=None: root.destroy())
 
-obj = Bulk_email(root)
+obj = BulkEmail(root)
 
 root.mainloop()
