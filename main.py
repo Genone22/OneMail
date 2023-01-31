@@ -1,25 +1,82 @@
 import os
+import re
 import time
 import ctypes
+import requests
+import webbrowser
 from tkinter import *
+from bs4 import BeautifulSoup
 from tkinter import filedialog
 from tkinter import messagebox
-import customtkinter  # pip install customtkinter
 from PIL import ImageTk  # pip install pillow
+import customtkinter  # pip install customtkinter
 import pandas as pd  # pip install pandas
 import email_function
 from email_marketing_info import info_text
+from center_tk_windows import CenterTk
+
 
 # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
 # Themes: "blue" (standard), "green", "dark-blue"
-customtkinter.set_default_color_theme("dark-blue")
+customtkinter.set_default_color_theme("blue")
 
 # This following setting in the ctypes library sets “DPI” awareness.
 # DPI stands for Dots per inch, another way of measuring screen resolution
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
+# Splash screen
+w = CenterTk()
+# for hiding titlebar
+w.overrideredirect(True)
 
+Frame(w, width=427, height=250, bg='#272727').place(x=0, y=0)
+label1 = Label(w, text='OneMail', fg='silver', bg='#272727')
+
+# Decorate it
+label1.configure(font=("Lab Grotesque", 33, "bold"))
+label1.place(x=100, y=70)
+
+label2 = Label(w, text='Загрузка...', fg='silver', bg='#272727')  # decorate it
+label2.configure(font=("Roboto", 9))
+label2.place(x=10, y=225)
+
+# Making animation
+image_a = ImageTk.PhotoImage(file='images/c2.png')
+image_b = ImageTk.PhotoImage(file='images/c1.png')
+
+# 2loops
+for i in range(2):
+    Label(w, image=image_a, border=0, relief=SUNKEN).place(x=180, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=200, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=220, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=240, y=145)
+    w.update_idletasks()
+    time.sleep(0.2)
+
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=180, y=145)
+    Label(w, image=image_a, border=0, relief=SUNKEN).place(x=200, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=220, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=240, y=145)
+    w.update_idletasks()
+    time.sleep(0.2)
+
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=180, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=200, y=145)
+    Label(w, image=image_a, border=0, relief=SUNKEN).place(x=220, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=240, y=145)
+    w.update_idletasks()
+    time.sleep(0.2)
+
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=180, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=200, y=145)
+    Label(w, image=image_b, border=0, relief=SUNKEN).place(x=220, y=145)
+    Label(w, image=image_a, border=0, relief=SUNKEN).place(x=240, y=145)
+    w.update_idletasks()
+    time.sleep(0.2)
+
+
+# God Object
 class BulkEmail(customtkinter.CTk):
     def __init__(self, root):
         self.info = info_text
@@ -27,7 +84,7 @@ class BulkEmail(customtkinter.CTk):
         self.root.iconbitmap('images/modern15.ico')
         # configure window
         self.root.title('OneMail')
-        self.root.geometry('760x600+450+150')
+        self.root.geometry('760x600+490+150')
         self.root.resizable(False, False)
         # Icons&Images
         self.email_icon = ImageTk.PhotoImage(file='images/modern10.png')
@@ -35,6 +92,8 @@ class BulkEmail(customtkinter.CTk):
         self.browse_icon = ImageTk.PhotoImage(file='images/import35.png')
         self.clear_icon = ImageTk.PhotoImage(file='images/clear35.png')
         self.question_icon = ImageTk.PhotoImage(file='images/question-mark.png')
+        self.html_view_icon = ImageTk.PhotoImage(file='images/html-35.png')
+        self.scrap_icon = ImageTk.PhotoImage(file='images/scraper-35.png')
         # Title
         title = Label(self.root,
                       text='Делайте Email расcылки быстро и легко',
@@ -42,7 +101,7 @@ class BulkEmail(customtkinter.CTk):
                       compound=LEFT,
                       font=('Lab Grotesque', 20),
                       bg='#0B4283',
-                      fg='#1a1a1a',
+                      fg='#242424',
                       anchor='w')
         title.place(x=0,
                     y=0,
@@ -101,6 +160,7 @@ class BulkEmail(customtkinter.CTk):
         self.txt_to.place(x=150,
                           y=205)
 
+
         self.txt_subj = customtkinter.CTkEntry(self.root,
                                                font=('Lab Grotesque', 17),
                                                width=350,
@@ -128,20 +188,20 @@ class BulkEmail(customtkinter.CTk):
                                                 font=('Lab Grotesque', 14))
 
         self.lbl_total.place(x=20,
-                             y=550)
+                             y=575)
 
         self.lbl_sent = customtkinter.CTkLabel(self.root,
                                                text='',
                                                font=('Lab Grotesque', 14))
-        self.lbl_sent.place(x=160,
-                            y=550)
+        self.lbl_sent.place(x=150,
+                            y=575)
 
         self.lbl_failed = customtkinter.CTkLabel(self.root,
                                                  text='',
                                                  text_color='#FF2400',
                                                  font=('Lab Grotesque', 14))
         self.lbl_failed.place(x=300,
-                              y=550)
+                              y=575)
 
         # Buttons
         btn_settings = Button(self.root,
@@ -157,33 +217,12 @@ class BulkEmail(customtkinter.CTk):
                           command=self.info_window,
                           image=self.question_icon,
                           bd=0,
-                          bg='#1a1a1a',
-                          activebackground='#1a1a1a',
+                          bg='#242424',
+                          activebackground='#242424',
                           cursor='hand2')
-        btn_info.place(x=400,
+        btn_info.place(x=390,
                        y=130)
 
-        btn_clear = Button(self.root,
-                           command=self.broom,
-                           image=self.clear_icon,
-                           bd=0,
-                           bg='#1a1a1a',
-                           activebackground='#1a1a1a',
-                           cursor='hand2')
-        btn_clear.place(x=632,
-                        y=682)
-
-
-        self.btn_browse = Button(self.root,
-                                 command=self.browse_file,
-                                 image=self.browse_icon,
-                                 bd=0,
-                                 bg='#1a1a1a',
-                                 activebackground='#1a1a1a',
-                                 state=DISABLED,
-                                 cursor='hand2')
-        self.btn_browse.place(x=692,
-                              y=682)
 
         btn_send = customtkinter.CTkButton(self.root,
                                            text='Отправить',
@@ -196,12 +235,156 @@ class BulkEmail(customtkinter.CTk):
                        height=50)
         self.check_file_exist()
 
+
+        self.btn_browse = Button(self.root,
+                                 command=self.browse_file,
+                                 image=self.browse_icon,
+                                 bd=0,
+                                 bg='#242424',
+                                 activebackground='#242424',
+                                 state=DISABLED,
+                                 cursor='hand2')
+        self.btn_browse.place(x=692,
+                              y=682)
+
+
+        btn_clear = Button(self.root,
+                           command=self.broom,
+                           image=self.clear_icon,
+                           bd=0,
+                           bg='#242424',
+                           activebackground='#242424',
+                           cursor='hand2')
+        btn_clear.place(x=632,
+                        y=682)
+
+
+        btn_html_view = Button(self.root,
+                               command=self.show_html,
+                               image=self.html_view_icon,
+                               bd=0,
+                               bg='#242424',
+                               activebackground='#242424',
+                               cursor='hand2')
+        btn_html_view.place(x=572,
+                            y=682)
+
+
+        btn_scrape_window = Button(self.root,
+                                   command=self.show_scrap_window,
+                                   image=self.scrap_icon,
+                                   bd=0,
+                                   bg='#242424',
+                                   activebackground='#242424',
+                                   cursor='hand2')
+        btn_scrape_window.place(x=512,
+                                y=682)
+
+
+    def show_scrap_window(self):
+        scraper = customtkinter.CTkToplevel()
+        scraper.title("Веб скрапер")
+        scraper.geometry('760x600+490+150')
+        scraper.resizable(False, False)
+        scraper.iconbitmap('images/modern15.ico')
+
+        # Title
+        url_title = Label(scraper,
+                          text='Вставьте URL для извлечения email-адресов:',
+                          compound=LEFT,
+                          font=('Lab Grotesque', 12),
+                          bg='#242424',
+                          fg='silver',
+                          anchor='w')
+        url_title.place(x=3,
+                        y=3,
+                        relwidth=1)
+
+        self.url_text = customtkinter.CTkTextbox(scraper,
+                                                 corner_radius=10,
+                                                 width=755,
+                                                 height=240)
+        self.url_text.place(x=3, y=33)
+
+        self.scrape_button = customtkinter.CTkButton(scraper,
+                                                     text="Извлечь",
+                                                     command=self.scrape_website,
+                                                     font=('Lab Grotesque', 13,
+                                                           'bold'),
+                                                     cursor='hand2'
+                                                     )
+        self.scrape_button.place(x=240, y=290, width=150, height=50)
+
+        self.save_button = customtkinter.CTkButton(scraper, text="Сохранить",
+                                                   command=self.save_to_excel,
+                                                   font=(
+                                                       'Lab Grotesque', 13,
+                                                       'bold'),
+                                                   cursor='hand2'
+                                                   )
+        self.save_button.place(x=400, y=290, width=150, height=50)
+
+        self.emails_text = customtkinter.CTkTextbox(scraper,
+                                                    corner_radius=10,
+                                                    width=755,
+                                                    height=245)
+        self.emails_text.place(x=3, y=350)
+
+    def scrape_website(self):
+        input_text = self.url_text.get("1.0", 'end-1c')
+        urls = re.findall(r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+',
+                          input_text)
+        emails = set()
+        for url in urls:
+            try:
+                response = requests.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                text = soup.get_text()
+                email_list = re.findall(r'[\w\.-]+@[\w\.-]+', text)
+                if not email_list:
+                    raise ValueError("No email addresses found on this website")
+                emails.update(email_list)
+            except requests.exceptions.RequestException as e:
+                print(f"Error connecting to {url}: {e}")
+            except ValueError as e:
+                print(f"{url}: {e}")
+        self.emails_text.delete("1.0", 'end')
+        for email in emails:
+            self.emails_text.insert('end', email + '\n')
+
+    def save_to_excel(self):
+        # Use the filedialog to ask the user to select a file
+        filepath = filedialog.asksaveasfilename(defaultextension=".xlsx",
+                                                filetypes=[
+                                                    ("Excel files", "*.xlsx")])
+        if filepath:
+            # Get the email addresses from the Text widget
+            emails = self.emails_text.get("1.0", 'end-1c').strip().split('\n')
+            # Create a DataFrame with a single column "email"
+            df = pd.DataFrame(emails, columns=["Email"])
+            # Write the DataFrame to the selected Excel file
+            df.to_excel(filepath, index=False)
+
+
+    def show_html(self):
+        filepath = filedialog.askopenfilename(
+            filetypes=[("HTML files", "*.html"), ("All files", "*.*")])
+        if filepath:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                html_text = f.read()
+            webbrowser.open(filepath)
+            self.txt_msg.insert('1.0', html_text)
+        else:
+            messagebox.showinfo("Отмена", "HTML файл не выбран")
+
     def info_window(self):
         self.root_3 = customtkinter.CTkToplevel()
         self.root_3.title('Информация')
-        self.root_3.geometry('760x600+450+150')
+        self.root_3.geometry('760x600+490+150')
         self.root_3.resizable(False, False)
         self.root_3.iconbitmap('images/modern15.ico')
+        
+        
 
         # Title_3
         title_info = Label(self.root_3,
@@ -210,7 +393,7 @@ class BulkEmail(customtkinter.CTk):
                            compound=CENTER,
                            font=('Lab Grotesque', 20, 'bold'),
                            bg='#0B4283',
-                           fg='#1a1a1a',
+                           fg='#242424',
                            anchor='n')
         title_info.place(x=0,
                          y=0,
@@ -228,9 +411,9 @@ class BulkEmail(customtkinter.CTk):
 
         self.info.configure(state=DISABLED,
                             text_color='silver',
-                            fg_color='#1a1a1a',
+                            fg_color='#242424',
                             font=('Lab Grotesque', 18),
-                            scrollbar_button_hover_color='#0B4283',)
+                            scrollbar_button_hover_color='#0B4283')
 
     def browse_file(self):
         op = filedialog.askopenfile(initialdir='/',
@@ -274,13 +457,14 @@ class BulkEmail(customtkinter.CTk):
                                  parent=self.root)
         else:
             if self.var_choice.get() == 'single':
+                name = "InterSert"
                 status = email_function.emails_send_funct(self.txt_to.get(),
                                                           self.txt_subj.get(),
                                                           self.txt_msg.get(1.0,
                                                                            'end'
                                                                            ),
                                                           self.from_,
-                                                          self.pass_)
+                                                          name)
                 if status == 's':
                     messagebox.showinfo('Готово',
                                         'Электронное письмо успешно отправлено',
@@ -291,6 +475,7 @@ class BulkEmail(customtkinter.CTk):
                                          parent=self.root)
 
             if self.var_choice.get() == 'bulk':
+                name = "InterSert"
                 self.failed = []
                 self.s_count = 0
                 self.f_count = 0
@@ -301,7 +486,7 @@ class BulkEmail(customtkinter.CTk):
                                                               self.txt_msg.get
                                                               (1.0, 'end'),
                                                               self.from_,
-                                                              self.pass_)
+                                                              name)
                     if status == 's':
                         self.s_count += 1
                     if status == 'f':
@@ -352,8 +537,8 @@ class BulkEmail(customtkinter.CTk):
     def setting_window(self):
         self.check_file_exist()
         self.root_2 = customtkinter.CTkToplevel()
-        self.root_2.title('Данные')
-        self.root_2.geometry('350x200+700+400')
+        self.root_2.title('Учётная запись')
+        self.root_2.geometry('350x200+740+400')
         self.root_2.resizable(False, False)
         self.root_2.focus_force()
         self.root_2.grab_set()
@@ -366,7 +551,7 @@ class BulkEmail(customtkinter.CTk):
                         compound=LEFT,
                         font=('Lab Grotesque', 15, 'bold'),
                         bg='#0B4283',
-                        fg='#1a1a1a',
+                        fg='#242424',
                         anchor='n')
         title_2.place(x=0,
                       y=0,
@@ -459,7 +644,7 @@ class BulkEmail(customtkinter.CTk):
             self.check_file_exist()
 
 
-# Cut / Paste / Copy / Ctrl+A function
+# Cut / Paste / Copy function
 def on_key_release(event):
     ctrl = (event.state & 0x4) != 0
     if event.keycode == 88 and ctrl and event.keysym.lower() != "x":
@@ -475,6 +660,7 @@ def on_key_release(event):
         event.widget.select_range(0, 'end')
 
 
+w.destroy()
 # Create CTk window
 root = customtkinter.CTk()
 
