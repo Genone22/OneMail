@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+def emails_send_funct(to_, subj_, msg_, from_, name):
+
+    # Create session for mail.ru
+    s = smtplib.SMTP('yoursmtpserver', 587)
+    # Start TLS for security
+    s.starttls()
+    # Authentication
+    s.login('yourlogin', 'yourpassword')
+
+    # Create message container - the correct MIME type is multipart/related
+    msg = MIMEMultipart('related')
+    msg['Subject'] = subj_
+    msg['From'] = "{} <{}>".format(name, from_)
+    msg['To'] = to_
+
+    # Encapsulate the plain and HTML versions of the message body in an
+    # 'alternative' part, so message agents can decide
+    # which they want to display.
+    msg_alternative = MIMEMultipart('alternative')
+    msg.attach(msg_alternative)
+    msg_text = MIMEText(msg_, 'plain', 'utf-8')
+    msg_alternative.attach(msg_text)
+    msg_html = MIMEText(msg_, 'html', 'utf-8')
+    msg_alternative.attach(msg_html)
+
+    # Sending the mail
+    s.sendmail(from_, to_, msg.as_string())
+    x = s.ehlo()
+    if x[0] == 250:
+        return 's'
+    else:
+        return 'f'
+
+    # Terminating the session
+    s.quit()
