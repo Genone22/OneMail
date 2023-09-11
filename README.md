@@ -36,7 +36,7 @@ pip install customtkinter pillow pandas
 1. Clone the repository or download the code.
 
 ```bash
-git clone https://github.com/your_username/OneMail.git
+git clone https://github.com/Genone22/OneMail.git
 
 cd OneMail
 ```
