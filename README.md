@@ -49,6 +49,10 @@ git clone https://github.com/Genone22/OneMail.git
 python main.py
 ```
 
+## Contributing
+
+As an open source project, OneMail welcomes contributions of all forms.
+
 ## Notes
 
 OneMail is designed for sending legitimate and non-spam emails. Use it responsibly and comply with email marketing regulations.
